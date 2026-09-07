@@ -1,84 +1,220 @@
-# AI Support Ticket Bot - chat bot
-It is repository for chat bot: [@AI Support Ticket Bot](https://t.me/AI Support Ticket Bot)
+# AI Support Ticket Bot
 
-## What it is?
-This repository can be imported to [Bots.Business](https://bots.business) as a worked chat bot.
-
-[Bots.Business](https://bots.business) - it is probably the first CBPaaS - Chat Bot Platform as a Service.
-
-A CBPaaS is a cloud-based platform that enables developers to create chatbots without needing to build backend infrastructure.
-
-## Create your own bot for Telegram from this Git repo
-
-How to create bot?
-1. Create bot with [@BotFather](https://telegram.me/BotFather) and take Secret Token
-2. Create bot in App and add Secret Token
-3. Add Public Key from App as [Deploy key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys) with read access (and write access for bot exporting if you need it)
-4. Do import for this git repo
-
-Now you can talk with yours new Telegram Bot
-
-See [more](https://help.bots.business/getting-started)
-
-## Commands - in commands folder
-File name - it is command name (Bot it can be rewritten in command description)
-
-Command can have: `name`, `help`, `aliases` (second names), `answer`, `keyboard`, `scnarios` (for simple logic) and other options.
-
-### Command description
-It is file header:
-
-    /*CMD
-      command: /test
-      help: this is help for ccommand
-      need_reply: [ true or false here ]
-      auto_retry_time: [ time in sec ]
-      answer: it is example answer for /test command
-      keyboard: button1, button2
-      aliases: /test2, /test3
-    CMD*/
-
-See [more](https://help.bots.business/commands)
-
-### Command body
-It is command code in JavaScript.
-Use Bot Java Script for logic in command.
-
-For example:
-> Bot.sendMessage(2+2);
-
-See [more](https://help.bots.business/scenarios-and-bjs)
+AI Support Ticket Bot combines automated AI customer support with a human admin support workflow for the Bots.Business platform.
 
 
-## Libraries - in libs folder
-You can store common code in the libs folder. File name - it is library name.
+![AI Support Ticket Bot](https://cdn.zadosource.com/uploads/codes/thumbnails/6a9d786863544_1788704872.png)
 
-For example code in myLib.js:
+## Bot Properties
 
-    function hello(){ Bot.sendMessage("Hello from lib!") }
-    function goodbye(name){ Bot.sendMessage("Goodbye, " + name) }
+Set these values in Bot Settings:
 
-    publish({
-      sayHello: hello,
-      sayGoodbyeTo: goodbye
-    })
+| Property Name             | Value                    |
+| ------------------------- | ------------------------ |
+| `ZADOSOURCE_API_KEY`      | Your API key             |
+| `ZADOSOURCE_AI_TRAIN_KEY` | Your AI training key     |
+| `SUPPORT_ADMIN_ID`        | Numeric Telegram user ID |
 
-then you can run in any bot's command:
+---
 
-    Libs.myLib.hello()
-    Libs.myLib.sayGoodbyeTo("Alice")
+## Overview
 
-See [more](https://help.bots.business/git/library)
+AI Support Ticket Bot uses ZadoSource AI to automatically answer customer questions while keeping a human administrator involved in the support process.
 
-## Other bots example
-See other bots examples in the [github](https://github.com/bots-business?utf8=✓&tab=repositories&q=&type=public&language=javascript) or in the [Bot Store](https://bots.business/)
+If the AI cannot answer a question, the bot can fall back to human support.
 
 
-## Other help
-[Help.bots.business](https://help.bots.business)
+## Features
 
-## API
-See [API](https://api.bots.business/docs#/docs/summary)
+* AI-powered customer replies via ZadoSource AI
+* Human administrator support
+* Every customer message sent to administrator
+* AI answer shown to administrator
+* Human fallback when AI cannot answer
+* Ticket tracking with unique IDs
+* One active ticket per customer
+* Same ticket ID throughout conversation
+* Admin Reply workflow
+* Close Ticket workflow
+* AI conversation continuity
+* New AI conversation after ticket closure
+* Attachment forwarding support
+* API authentication error handling
+* AI Training Key/access error handling
+* Rate-limit handling
+* Timeout handling
+* Service-error handling
+
+## Support Flow
+
+```text
+Customer sends a message
+        |
+        v
+ZadoSource AI processes it
+        |
+        v
++-------------------------+
+| Does AI have an answer? |
++-------------------------+
+       |             |
+      YES            NO
+       |             |
+       v             v
+ AI replies       Human support
+ to customer      fallback
+       |             |
+       +------+------+
+              |
+              v
+Human admin receives the message
+              |
+              v
+Admin can reply manually
+              |
+              v
+Same ticket remains open
+              |
+              v
+Customer sends another message
+              |
+              v
+New admin notification
+Same ticket ID
+              |
+              v
+Admin closes ticket
+              |
+              v
+Ticket + AI conversation end
+              |
+              v
+Next request creates a new ticket
+```
+
+## Main Message Handler
+
+The main message handler:
+
+* Detects admin reply mode
+* Forwards admin replies to customers
+* Creates new tickets for new users
+* Processes messages for existing tickets
+* Handles AI processing
+* Sends admin notifications
+
+## AI Integration
+
+The bot uses the ZadoSource AI Chat API.
+
+Endpoint:
+
+```text
+https://api.zadosource.com/v1/ai/chat
+```
+
+Requirements:
+
+* ZadoSource API Key
+* AI Training Key
+* `conversation_id` for conversation context
+
+The bot also handles API errors and falls back to human support when required.
 
 
-![](https://bots.business/images/web-logo.png)
+## Ticket System
+
+Ticket format:
+
+```text
+SUP-XXX-XXXX
+```
+
+Ticket behavior:
+
+* One active ticket per customer
+* Ticket remains active throughout the conversation
+* The same ticket ID is used for follow-up messages
+* Ticket closes when the admin closes it
+* A new ticket is created after the previous ticket is closed
+* A new AI conversation starts after ticket closure
+
+
+## Admin Notifications
+
+Each new customer message creates an admin notification containing:
+
+* Ticket ID
+* Ticket status
+* Customer username
+* Customer Telegram ID
+* Customer message
+* AI response, if available
+* Reply button
+* Reply Anyway button when required
+* Close Ticket button
+
+
+## Admin Reply Mode
+
+1. Admin clicks `Reply`
+2. Bot enters reply mode
+3. Admin sends a message
+4. Bot forwards the message to the customer
+5. Admin notification is updated
+6. Reply buttons are removed
+7. Ticket remains open
+
+
+## AI Error Handling
+
+| Error Type           | Action                    |
+| -------------------- | ------------------------- |
+| API Key invalid      | Notify admin              |
+| Training Key invalid | Notify admin              |
+| Rate limit           | Fallback to human support |
+| Timeout              | Fallback to human support |
+| Service unavailable  | Fallback to human support |
+
+
+## Security
+
+* Never publish real credentials
+* Store credentials using Bot Properties
+* Revoke and regenerate credentials if they are exposed
+* Keep the admin Telegram ID private
+* Do not hardcode API keys into public bot code
+
+
+## Installation
+
+1. Create a Telegram bot using BotFather
+2. Open the Bots.Business platform
+3. Create a new bot
+4. Add the required Bot Properties
+5. Add the message handler
+6. Start the bot
+7. Test AI support
+8. Test human admin replies
+9. Test ticket closing
+10. Deploy the bot
+
+## ZadoSource AI
+
+Create and train your AI assistant:
+
+Website:
+https://ai.zadosource.com/
+
+Documentation:
+https://docs.zadosource.com/
+
+Support:
+`@ZadoSourceAssistant`
+
+
+## Credits
+
+AI: ZadoSource AI
+
+Free Source: ZadoSource
