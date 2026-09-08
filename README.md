@@ -122,14 +122,9 @@ From the Telegram account configured as `adminTelegramId`, run:
 
 ```
 
-The command creates the bot configuration used by the rest of the project:
+The command creates the bot configuration used by the rest of the project
 
-```text
-zs_support_config
-
-```
-
-The bot reads its ZadoSource and support configuration from this property.
+The bot reads its ZadoSource and support configuration from the setup property.
 
 ### 4. Remove the Setup Command
 
