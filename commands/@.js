@@ -950,9 +950,9 @@ function startAiRequest(
   }
 
 
-  HTTP.post({
-    url:
-      "https://api.zadosource.com/v1/ai/chat",
+HTTP.post({
+  url:
+    cfg.apiUrl,
 
     headers: {
       "Authorization":
