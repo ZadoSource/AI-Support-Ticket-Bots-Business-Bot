@@ -91,14 +91,6 @@ The supported installation method for this demo is:
 /setup_support
 ```
 
-You do **not** need to manually create separate configuration properties such as:
-
-```text
-ZADOSOURCE_API_KEY
-ZADOSOURCE_AI_TRAIN_KEY
-SUPPORT_ADMIN_ID
-```
-
 The setup command handles the bot configuration.
 
 ---
@@ -537,27 +529,6 @@ https://docs.zadosource.com/
 ```
 
 Users must create their own ZadoSource account and configure their own AI assistant before using the AI features of this bot.
-
----
-
-## Bots.Business and ZadoSource
-
-**ZadoSource and Bots.Business are separate and independent services.**
-
-This project demonstrates how ZadoSource AI can be connected to a Telegram bot running on the Bots.Business platform.
-
-Unless explicitly stated otherwise:
-
-- ZadoSource is not owned or operated by Bots.Business.
-- Bots.Business is not owned or operated by ZadoSource.
-- No official affiliation, partnership, endorsement, or joint ownership between ZadoSource and Bots.Business is implied by this integration.
-- Bots.Business provides the bot-development/runtime platform.
-- ZadoSource provides and manages the external AI service.
-- ZadoSource accounts, AI assistants, API credentials, API usage, limits, pricing, and service availability are managed by ZadoSource.
-- Bots.Business is not responsible for operating the ZadoSource AI service.
-- The integration/source code connecting the bot to ZadoSource is maintained separately from the Bots.Business platform.
-
-Users should review the terms, policies, pricing, limits, and documentation of each service independently.
 
 ---
 
