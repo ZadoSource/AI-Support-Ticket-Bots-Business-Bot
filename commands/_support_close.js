@@ -75,19 +75,88 @@ if (ticket.status === "closed") {
 }
 
 
+var pendingEventToken =
+  User.getProp(
+    "zs_admin_pending_event",
+    ""
+  );
+
+pendingEventToken =
+  String(pendingEventToken || "");
+
+var pendingEvent =
+  pendingEventToken
+    ? getEvent(pendingEventToken)
+    : null;
+
+var clearPendingReply = false;
+
+
+if (
+  pendingEventToken &&
+  !pendingEvent
+) {
+  clearPendingReply = true;
+}
+
+
+if (
+  pendingEvent &&
+  String(pendingEvent.ticketToken || "") ===
+    String(ticket.token || "")
+) {
+  clearPendingReply = true;
+
+  if (
+    String(pendingEvent.token || "") !==
+      String(event.token || "")
+  ) {
+    pendingEvent.status = "closed";
+    pendingEvent.pendingAdminReply = "";
+
+    saveEvent(pendingEvent);
+
+    if (pendingEvent.adminMessageId) {
+      editEvent(
+        pendingEvent,
+        ticket
+      );
+    }
+  }
+}
+
+if (
+  pendingEvent &&
+  String(pendingEvent.ticketToken || "") !==
+    String(ticket.token || "")
+) {
+  var pendingTicket =
+    getTicket(
+      pendingEvent.ticketToken
+    );
+
+  if (
+    !pendingTicket ||
+    pendingTicket.status === "closed" ||
+    pendingEvent.status !== "replying"
+  ) {
+    clearPendingReply = true;
+  }
+}
 
 ticket.status = "closed";
+
 ticket.closedAt =
   new Date().toISOString();
+
 ticket.activeEventToken = "";
+
 
 event.status = "closed";
 event.pendingAdminReply = "";
 
 saveTicket(ticket);
 saveEvent(event);
-
-
 
 Bot.setProp({
   name: "zs_active_support_ticket",
@@ -106,20 +175,22 @@ Bot.setProp({
 });
 
 
-
-User.setProp(
-  "zs_admin_pending_event",
-  "",
-  "string"
-);
+if (clearPendingReply) {
+  User.setProp(
+    "zs_admin_pending_event",
+    "",
+    "string"
+  );
+}
 
 
 Api.answerCallbackQuery({
   callback_query_id:
     tgUpdate.callback_query.id,
-  text: "Ticket closed."
-});
 
+  text:
+    "Ticket closed."
+});
 
 
 var callbackMessage =
@@ -132,6 +203,7 @@ if (
   Api.editMessageText({
     chat_id:
       chat.chatid,
+
     message_id:
       callbackMessage.message_id,
 
@@ -150,7 +222,8 @@ if (
         )
       ),
 
-    parse_mode: "HTML",
+    parse_mode:
+      "HTML",
 
     reply_markup: {
       inline_keyboard: []
@@ -160,7 +233,6 @@ if (
       "/support_close_edit_error"
   });
 }
-
 
 
 Api.sendMessage({
@@ -174,5 +246,6 @@ Api.sendMessage({
     "</code> has been closed.\n\n" +
     "If you need assistance again, send another message and a new ticket will be created.",
 
-  parse_mode: "HTML"
+  parse_mode:
+    "HTML"
 });
