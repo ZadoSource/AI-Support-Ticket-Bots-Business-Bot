@@ -73,25 +73,69 @@ Before AI-powered replies can work, you must:
 
 ## Setup
 
-After installing the bot in Bots.Business, open the Telegram bot from the account that will manage it and run:
+This demo uses **ZadoSource AI as an external AI service**.
 
-```text
-/setup_support
-```
+A separate ZadoSource account and trained ZadoSource AI assistant are required.
 
-Follow the setup process and provide:
+### 1. Create Your ZadoSource AI
+
+Visit:
+
+[https://ai.zadosource.com/](https://ai.zadosource.com/)
+
+Create an account, create and train an AI assistant, then obtain:
 
 - ZadoSource API Key
 - ZadoSource AI Training Key
-- Support Administrator Telegram ID
 
-The supported installation method for this demo is:
+### 2. Configure `/setup_support`
+
+After installing the bot in Bots.Business, open the `/setup_support` command in the Bots.Business editor.
+
+At the top of the command, configure the setup object:
+
+```js
+var setup = {
+  apiUrl: "https://api.zadosource.com/v1/ai/chat",
+  apiKey: "PUT_YOUR_API_KEY_HERE",
+  trainKey: "PUT_YOUR_TRAIN_KEY_HERE",
+  adminTelegramId: 123456789,
+  queryMax: 500
+};
+
+```
+
+Replace:
+
+- `PUT_YOUR_API_KEY_HERE` with your ZadoSource API Key
+- `PUT_YOUR_TRAIN_KEY_HERE` with your ZadoSource AI Training Key
+- `123456789` with the numeric Telegram ID of the support administrator
+
+Save the command.
+
+### 3. Run `/setup_support`
+
+From the Telegram account configured as `adminTelegramId`, run:
 
 ```text
 /setup_support
+
 ```
 
-The setup command handles the bot configuration.
+The command creates the bot configuration used by the rest of the project:
+
+```text
+zs_support_config
+
+```
+
+The bot reads its ZadoSource and support configuration from this property.
+
+### 4. Remove the Setup Command
+
+After setup is completed successfully, delete or disable `/setup_support` so credentials are not left inside an executable setup command.
+
+> **Important:** Do not publish real API credentials in your GitHub repository or Bots.Business demo source.
 
 ---
 
