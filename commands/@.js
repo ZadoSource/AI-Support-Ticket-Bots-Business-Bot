@@ -403,9 +403,11 @@ function retirePreviousEvent(ticket) {
     return;
   }
 
-  var cfg = zsConfig();
-  var previousToken = String(ticket.activeEventToken || "");
-  var previous = getEvent(previousToken);
+  var previousToken =
+    String(ticket.activeEventToken || "");
+
+  var previous =
+    getEvent(previousToken);
 
   if (!previous) {
     ticket.activeEventToken = "";
@@ -413,34 +415,22 @@ function retirePreviousEvent(ticket) {
     return;
   }
 
+  if (previous.status === "replying") {
+    ticket.activeEventToken = "";
+    saveTicket(ticket);
+    return;
+  }
   if (
     previous.status === "processing" ||
-    previous.status === "waiting" ||
-    previous.status === "replying"
+    previous.status === "waiting"
   ) {
     previous.status = "superseded";
     previous.pendingAdminReply = "";
+
     saveEvent(previous);
 
     if (previous.adminMessageId) {
       editEvent(previous, ticket);
-    }
-
-    if (cfg.adminTelegramId) {
-      var pending = getUserPropByTelegramId(
-        "zs_admin_pending_event",
-        cfg.adminTelegramId,
-        ""
-      );
-
-      if (String(pending || "") === previousToken) {
-        setUserPropByTelegramId(
-          "zs_admin_pending_event",
-          cfg.adminTelegramId,
-          "",
-          "string"
-        );
-      }
     }
   }
 
@@ -1004,4 +994,3 @@ function answerSupportCallback(text, showAlert) {
     show_alert: Boolean(showAlert)
   });
 }
-
