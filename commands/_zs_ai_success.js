@@ -289,11 +289,13 @@ if (!wasSuperseded) {
     event.token;
 }
 
-if (conversationId) {
+if (
+  !wasSuperseded &&
+  conversationId
+) {
   ticket.conversationId =
     conversationId;
 }
-
 saveEvent(
   event
 );
