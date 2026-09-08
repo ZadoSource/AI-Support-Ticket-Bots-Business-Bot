@@ -874,9 +874,13 @@ function completeAiHttp(eventToken, status, rawContent, transportError) {
     ticket.activeEventToken = event.token;
   }
 
-  if (conversationId) {
-    ticket.conversationId = conversationId;
-  }
+if (
+  !wasSuperseded &&
+  conversationId
+) {
+  ticket.conversationId =
+    conversationId;
+}
 
   saveEvent(event);
   saveTicket(ticket);
