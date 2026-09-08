@@ -45,7 +45,7 @@ Before AI-powered replies can work, you must:
 4. Obtain your ZadoSource API Key.
 5. Obtain the AI Training Key for your assistant.
 6. Know the numeric Telegram user ID of the support administrator.
-7. Run `/setup_support` inside the bot.
+7. Configure `/setup_support` in the Bots.Business editor, then run it from the configured administrator account.
 
 > [!IMPORTANT]
 > A separate ZadoSource account is required.
@@ -63,10 +63,13 @@ Before AI-powered replies can work, you must:
 4. Get your ZadoSource API Key
 5. Get your AI Training Key
 6. Get your support admin Telegram ID
-7. Run /setup_support
-8. Complete configuration
-9. Send a test customer message
-10. Test Reply + Close Ticket
+7. Open /setup_support in the Bots.Business editor
+8. Replace the placeholder API Key, AI Training Key, and admin Telegram ID
+9. Save the command
+10. Run /setup_support from the configured admin account
+11. Send a test customer message
+12. Test AI reply, Admin Reply, and Close Ticket
+13. Delete or disable /setup_support after successful setup
 ```
 
 ---
@@ -88,45 +91,30 @@ Create an account, create and train an AI assistant, then obtain:
 - ZadoSource API Key
 - ZadoSource AI Training Key
 
-### 2. Configure `/setup_support`
+### 2. Configure and Run Setup
 
-After installing the bot in Bots.Business, open the `/setup_support` command in the Bots.Business editor.
+Open the `/setup_support` command in the Bots.Business editor.
 
-At the top of the command, configure the setup object:
+Replace the placeholder:
 
-```js
-var setup = {
-  apiUrl: "https://api.zadosource.com/v1/ai/chat",
-  apiKey: "PUT_YOUR_API_KEY_HERE",
-  trainKey: "PUT_YOUR_TRAIN_KEY_HERE",
-  adminTelegramId: 123456789,
-  queryMax: 500
-};
-
-```
-
-Replace:
-
-- `PUT_YOUR_API_KEY_HERE` with your ZadoSource API Key
-- `PUT_YOUR_TRAIN_KEY_HERE` with your ZadoSource AI Training Key
-- `123456789` with the numeric Telegram ID of the support administrator
+- ZadoSource API Key
+- ZadoSource AI Training Key
+- Administrator Telegram ID
 
 Save the command.
 
-### 3. Run `/setup_support`
-
-From the Telegram account configured as `adminTelegramId`, run:
+Then, from the configured administrator Telegram account, run:
 
 ```text
 /setup_support
 
 ```
 
-The command creates the bot configuration used by the rest of the project
+The command creates the bot-level configuration property zs_support_config.
 
-The bot reads its ZadoSource and support configuration from the setup property.
+The rest of the bot reads the ZadoSource API settings and support administrator configuration from zs_support_config.
 
-### 4. Remove the Setup Command
+### 3. Remove or Disable the Setup Command
 
 After setup is completed successfully, delete or disable `/setup_support` so credentials are not left inside an executable setup command.
 
@@ -190,13 +178,11 @@ Keep these credentials private.
 
 ### 5. Configure the Telegram Bot
 
-Return to your Telegram bot and run:
-
+Open 
 ```text
 /setup_support
 ```
-
-Complete the setup process.
+ in the Bots.Business editor, replace the placeholder API Key, AI Training Key, and administrator Telegram ID, save the command, then run /setup_support from the configured administrator account.
 
 ---
 
@@ -518,15 +504,23 @@ AI Training Key
 
 Get the numeric Telegram ID of the person who should receive and manage support tickets.
 
-### 8. Run Setup
+### 8. Configure and Run Setup
 
-Open the Telegram bot and run:
+Open the `/setup_support` command in the Bots.Business editor.
+
+Replace the placeholder:
+
+- ZadoSource API Key
+- ZadoSource AI Training Key
+- Administrator Telegram ID
+
+Save the command.
+
+Then, from the configured administrator Telegram account, run:
 
 ```text
 /setup_support
 ```
-
-Enter the requested ZadoSource and administrator information.
 
 ### 9. Test the Bot
 
@@ -640,6 +634,8 @@ https://ai.zadosource.com/
 **ZadoSource**
 
 This project demonstrates an independent integration between the two services.
+
+> ZadoSource AI is a separate external service and requires its own account and configuration. Bots.Business provides the bot platform, while ZadoSource provides the AI service.
 
 ---
 
